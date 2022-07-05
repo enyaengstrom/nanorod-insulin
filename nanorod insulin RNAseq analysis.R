@@ -167,21 +167,20 @@ combine.gsea <- function(gsea.list,number.of.pathways){
 }
 
 gsea <- combine.gsea(gsea.all,3)
-gsea <- gsea[order(gsea$p.adjust),]
+gsea <- gsea[order(-NES),]
+gsea.plot <- gsea[1:70,] # change depending on which to plot
 
 # Make Dotplot (DP)
-pdf(file = "GSEA Dotplot GO-Terms NES All NROnly.pdf")
-DP <- ggplot(gsea, aes(x= factor(Condition, levels = c("Insulin 100nM", "NR7 10nM", "NR7 100nM")), 
+pdf(file = "GSEA Heatmap All.1 GO-Terms NES.pdf")
+HM <- ggplot(gsea.plot, aes(x= factor(Condition, levels = c("Insulin 100nM", "NR7 10nM", "NR7 100nM")), 
                        y=reorder(Description,NES,mean), 
-                       size=logFDR, 
-                       color=NES, 
                        group= factor(Condition, levels = c("Insulin 100nM", "NR7 10nM", "NR7 100nM")))) + 
-  geom_point(alpha = 0.9) +
-  geom_point() +
-  scale_colour_distiller(palette = "RdBu", limits=c(min(gsea$NES),max(gsea$NES))) +
-  ylab("Pathway") + xlab("Condition")+
+  geom_tile(aes(fill = gsea.plot$NES)) +
+  scale_fill_distiller(palette = "RdBu", limits=c(min(gsea$NES),max(gsea$NES))) +
+  ylab("Pathway") + xlab("Condition") + labs(fill ="NES") +
+  scale_x_discrete(guide = guide_axis(angle = 90)) +
   theme_classic()
-DP
+HM
 dev.off()
 
 
