@@ -30,6 +30,13 @@ t2g <- fread("https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_
 # Import quantification and link to gene ID
 txi <- tximport(fls, type = "salmon", tx2gene = t2g[,1:2], ignoreAfterBar = TRUE)
 
+# If you are importing proccessed matrix data from ArrayExpress, use this to create the txi file
+# If you are doing this you also need to fix the fls file manually for the meta data
+# txi <- list(abundance = as.matrix(read.table("txi_abundance.txt", sep = "\t")),
+                 #counts = as.matrix(read.table("txi_counts.txt", sep = "\t")),
+                 #length = as.matrix(read.table("txi_length.txt", sep ="\t")), 
+                 #countsFromAbundance = "no")
+
 # Construct file for metadata 
 construct.meta <- function(files){
   meta <- data.table(sample=names(files))
